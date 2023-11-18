@@ -31,18 +31,14 @@ export function getFileData (filePath: string, resourcePath: string, opts: Data 
 
 export function getHtmlContent (content: string, resourcePath: string, opts: Data | undefined, loaderOpts: LoaderOptions): string {
   const reg = /<%-.*?%>/
+  let ejsOptions: any
   if (reg.test(content)) {
-    const htmlContent = render(
-      content,
-      opts,
-      {
-        includer: (originalPath) => {
-          return getFileData(originalPath, resourcePath, undefined, loaderOpts)
-        }
+    ejsOptions = {
+      includer: (originalPath: string) => {
+        return getFileData(originalPath, resourcePath, undefined, loaderOpts)
       }
-    )
-
-    return htmlContent
+    }
   }
-  return content
+
+  return render(content, opts, ejsOptions)
 }
